@@ -58,3 +58,72 @@ endl: .asciiz "\n"
   	sw $t0,0($a2)
   	
   	jr $ra  	
+####################################
+# partition function
+# parameter: 	$a1: left x4    $a2: right x4     $a3 :pivot=value
+# return: 	$v1=partitionPoint
+             		
+####################################
+ partition:
+ 	addi $sp,$sp,-4		#store $ra to stack
+  	sw $ra,0($sp)
+ 	
+  	
+  	
+ 		
+  	add $s1,$s0,$a1		#luu dia chi leftPointer ($s1 = address of leftPointer)
+  	addi $s1,$s1,-4		#leftPointer= left-1
+  	add $s2,$s0,$a2		#luu dia chi rifhtPointer ($s2 = address of rightPointer)
+  	
+    loopPartition:
+      loopLeft:
+    	addi $s1,$s1,4		# ++ leftPointer
+    	lw $t1,0($s1)		#load so leftPointr vao bien $t1
+    	slt $t0,$t1 ,$a3	#so sanh voi pivot
+    	bne $t0,$0,loopLeft
+      loopRight:
+    	beq $s2,$s0,exitRight	#exit neu rightPointer=0
+    	addi $s2,$s2,-4		# -- rightPointer
+    	lw $t1,0($s2)		#load so leftPointr vao bien $t1
+    	slt $t0,$t1 ,$a3	#so sanh voi pivot
+    	beq $t0,$0,loopRight
+         exitRight:
+         	slt $t0,$s1,$s2		#if(leftPointer<rightPointer)
+         	beq $t0,$0,exitLoopPartition	# branch when leftPoniter>= rightPointer
+         	
+         	addi $sp,$sp,-8		#add to stack
+         	sw $a1,0($sp)
+  	sw $a2,4($sp)
+  	
+         	add $a1,$0,$s1		#swap(leftPointer,rightPointer);
+         	add $a2,$0,$s2
+         	jal swap
+         	
+         	lw $a1,0($sp)		#load from stack
+  	lw $a2,4($sp)
+  	addi $sp,$sp,8
+  	
+         	j loopPartition
+   exitLoopPartition:
+   	addi $sp,$sp,-8		#add to stack
+         	sw $a1,0($sp)
+  	sw $a2,4($sp)
+         	
+ 	add $a1,$0,$s1		#swap(leftPointer,right);
+ 	add $a2,$s0,$a2
+         	jal swap
+         	
+         	lw $a1,0($sp)		#load from stack
+  	lw $a2,4($sp)
+  	addi $sp,$sp,8
+  	
+  	
+  	
+         	jal display		#print array
+         	
+         	add $v1,$0,$s1		#return partitionPointer=leftPointer
+         	lw $ra,0($sp)
+  	addi $sp,$sp,4
+	
+         	jr $ra		#exit Partition Function
+        	
