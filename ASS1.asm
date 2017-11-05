@@ -126,4 +126,57 @@ endl: .asciiz "\n"
   	addi $sp,$sp,4
 	
          	jr $ra		#exit Partition Function
-        	
+
+
+###########################################
+#quickSort Function
+#parameter	$a1: left x4	$a2: right x4
+#return	void
+##############################################	
+  quickSort:	
+  	addi $sp,$sp,-4		#store $ra to stack
+  	sw $ra,0($sp)
+  	
+  
+   	slt $t0,$a1,$a2		#check condition of the end
+   	beq $t0,$0, exitQuickSort
+   	
+   	
+  	
+  	add $a3,$s0,$a2		#pivot = Array[right];
+  	lw $a3,0($a3)
+  	
+  	jal partition		#partition(left, right, pivot);
+  	
+  	add $s1 ,$0,$v1		#return partitionPointer address
+  	sub $s1,$s1,$s0		#change to partitionPoint x4
+  	
+  	addi $sp,$sp,-12		#add parameter to stack
+         	sw $a1,0($sp)
+  	sw $a2,4($sp)
+  	sw $s1,8($sp)
+  	
+  	addi $a2,$s1,-4		#partitionPoint-1
+  	jal quickSort		#quickSort(left,partitionPoint-1);
+  	
+   	lw $a1,0($sp)		#load from stack
+  	lw $a2,4($sp)
+  	lw $s1,8($sp)
+  	addi $sp,$sp,12
+   
+   	addi $sp,$sp,-12		#add parameter to stack
+         	sw $a1,0($sp)
+  	sw $a2,4($sp)
+  	sw $s1,8($sp)
+  	
+  	addi $a1,$s1,4		#partitionPoint+1
+  	jal quickSort		#quickSort(partitionPoint+1,right);
+  	
+   	lw $a1,0($sp)		#load from stack
+  	lw $a2,4($sp)
+  	lw $s1,8($sp)
+  	addi $sp,$sp,12
+   exitQuickSort:
+  	lw $ra,0($sp)
+  	addi $sp,$sp,4
+  	jr $ra        	
