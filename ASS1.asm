@@ -44,4 +44,17 @@ endl: .asciiz "\n"
   	addi $v0,$0,4
   	syscall
    	jr $ra
-   	
+####################################
+#swap function
+#parameter	$a1: num1 addres	$a2: num2 address
+#return	void
+########################################
+ swap:
+ 	
+ 	
+  	lw $t0,0($a1)		#luu num1 vào temp1 = $t0	
+  	lw $t1,0($a2)		#luu num2 vào temp2 = $t1
+  	sw $t1,0($a1)		#swap(num1,num2);
+  	sw $t0,0($a2)
+  	
+  	jr $ra  	
